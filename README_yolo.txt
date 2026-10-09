@@ -7,9 +7,9 @@
 1. 操作系统：Windows
 2. Python：3.11（conda 环境名 yolo，路径 D:\Deeplearning\anaconda3\envs\yolo）
 3. 核心依赖：
-   - ultralytics 8.3.x（从 D:\Deeplearning\ultralytics-8.3.163 源码目录运行）
-   - torch（GPU/CPU 版均可，本次训练实际使用 CPU）
-   - numpy、opencv-python、pyyaml、matplotlib、pandas、seaborn
+   ultralytics 8.3.x（从 D:\Deeplearning\ultralytics-8.3.163 源码目录运行）
+   torch（本次训练使用 CPU，只能用cpu，/(ㄒoㄒ)/~~）
+   numpy、opencv-python、pyyaml、matplotlib、pandas、seaborn
 4. 预训练权重：yolo11n.pt
 5. 数据集：D:\Deeplearning\ultralytics-8.3.163\datasets\number1\number1.yaml
     10 个类别（0~9）
@@ -45,7 +45,7 @@
    本验证集上分类与定位几乎完美。
 
 2. Loss 曲线分析（results.png）
-   - val 三项损失（box/cls/dfl）同步下降，与训练损失趋势一致，
+   val 三项损失（box/cls/dfl）同步下降，与训练损失趋势一致，
      没有出现"训练损失降、验证损失升"的发散，说明没有明显过拟合迹象
      但是这个数据集太简单
 
@@ -61,7 +61,7 @@
      居中的印刷数字。换成手写体、真实拍照背景、倾斜/粘连数字时，预期性能
      会明显下降
    2.样本量小（仅 200 张）、字体单一、无真实背景、无旋转/畸变
-   3.进：补充手写体）、真实场景背景、多字体、多尺寸
+   3.改进：补充手写体、真实场景背景、多字体、多尺寸
      与随机旋转的数据；扩大训练集到数千张；引入多数字连写样本
 
 失败情况2：对多个数字粘连识别效果不佳
@@ -82,7 +82,10 @@
 4.当前数据集数量少，但是由于内存问题和电脑无法用GPU来跑模型，
    暂且选择了网上找到的数量、压缩包大小合适的数据集，运用到真实中需要更多
    的、且具有扭曲、手写等贴近生活的数字图片
-   电脑卡机黑屏了一次🙏 不敢乱来了🙏 希望理解🙏
+	由于最近还在处理其他相关的，比如点云处理，电脑内存要booom了，所以
+   数据集以及训练轮数都有偏少的问题，不是故意的🙏
+   电脑卡机黑屏重启了好几次🙏 不敢乱来了🙏 希望理解🙏
+
 
 
 附：相关路径
