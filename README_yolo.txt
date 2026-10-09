@@ -87,7 +87,6 @@
    电脑卡机黑屏重启了好几次🙏 不敢乱来了🙏 希望理解🙏
 
 
-
 附：相关路径
   训练脚本：  D:\Deeplearning\ultralytics-8.3.163\mytrain.py
   预测脚本：  D:\Deeplearning\ultralytics-8.3.163\mypredict.py
