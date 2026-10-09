@@ -9,9 +9,9 @@ const string VIDEO_PATH = "road_video.mp4";
 // 偏移报警阈值：像素，大于该值判定偏离车道
 const int OFFSET_THRESHOLD = 30;
 
-// -------------------------------------------------------------
+// -------------- 
 // 1. Canny 边缘检测：灰度化 -> 高斯模糊去噪 -> Canny 提取边缘
-// -------------------------------------------------------------
+// --------------- 
 Mat canny_edge(Mat img)
 {
     Mat gray, blur_img, edges;
@@ -21,9 +21,9 @@ Mat canny_edge(Mat img)
     return edges;
 }
 
-// -------------------------------------------------------------
+// ---------------------------- 
 // 2. ROI 掩码：用梯形只保留路面车道区域，去掉天空/车外背景
-// -------------------------------------------------------------
+// ----------------------------- 
 Mat roi_mask(Mat edges)
 {
     int height = edges.rows;
@@ -45,9 +45,9 @@ Mat roi_mask(Mat edges)
     return roi;
 }
 
-// -------------------------------------------------------------
+// ---------------------------- 
 // 3. 筛选左右车道线：按斜率区分，再最小二乘拟合出平均直线
-// -------------------------------------------------------------
+// ----------------------------- 
 vector<Vec4i> average_lines(Mat img, vector<Vec4i> lines)
 {
     vector<Vec4i> result;
@@ -60,7 +60,7 @@ vector<Vec4i> average_lines(Mat img, vector<Vec4i> lines)
         if (x2 - x1 == 0) continue;   // 排除竖直线
         double slope = (double)(y2 - y1) / (x2 - x1);
         if (abs(slope) < 0.5) continue;  // 排除接近水平的干扰线
-        // 斜率为负 -> 左车道线；斜率为正 -> 右车道线
+        // 斜率为负  左车道线；斜率为正  右车道线
         if (slope < 0)
         {
             left_pts.push_back(Point2f(x1, y1));
@@ -182,13 +182,13 @@ int main()
             }
             else if (offset > 0)
             {
-                // 车中心在车道中心线右边 -> 偏右
+                // 车中心在车道中心线右边 -> 偏右 "Right"
                 statusText = "Right";
                 textColor = Scalar(0, 0, 255);   // 红色，醒目提示
             }
             else
             {
-                // 车中心在车道中心线左边 -> 偏左
+                // 车中心在车道中心线左边 -> 偏左 "Left"
                 statusText = "Left";
                 textColor = Scalar(0, 0, 255);   // 红色，醒目提示
             }
@@ -198,7 +198,7 @@ int main()
         }
         else
         {
-            // 没有同时识别出两条车道线，打印提示
+            // 没有同时识别出两条车道线，打印提示"None"
             putText(frame, "None", Point(40, 70),
                 FONT_HERSHEY_SIMPLEX, 1.5, Scalar(0, 0, 255), 3);
         }
@@ -207,9 +207,14 @@ int main()
         imshow("车道线检测", frame);   // 显示结果
         // imshow("ROI边缘", roi);     // 想看中间过程可取消注释
         char key = waitKey(30);
-        if (key == 27 || key == 'q' || key == 'Q') break;  // ESC 或 Q 退出
+
+        //  ESC 或 Q 退出
+        if (key == 27 || key == 'q' || key == 'Q') 
+        {
+            break;
+        }  
     }
-    cap.release();
-    destroyAllWindows();
+    //cap.release();
+   // destroyAllWindows();
     return 0;
 }
