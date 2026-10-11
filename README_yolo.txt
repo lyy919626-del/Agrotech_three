@@ -1,19 +1,18 @@
-
+3.YOLO模型训练README.txt
+ 
 一、任务目标
 使用 YOLO 完成阿拉伯数字 0~9 的目标检测。本项目基于 ultralytics 源码环境，
-以自采集的印刷体数字数据集进行训练，并在测试集上完成推理。
+以自采集/自制作的印刷体数字数据集进行训练，并在测试集上完成推理。
 
 二、环境配置
 1. 操作系统：Windows
 2. Python：3.11（conda 环境名 yolo，路径 D:\Deeplearning\anaconda3\envs\yolo）
 3. 核心依赖：
-   ultralytics 8.3.x（从 D:\Deeplearning\ultralytics-8.3.163 源码目录运行）
-   torch（本次训练使用 CPU，只能用cpu，/(ㄒoㄒ)/~~）
-   numpy、opencv-python、pyyaml、matplotlib、pandas、seaborn
-4. 预训练权重：yolo11n.pt
-5. 数据集：D:\Deeplearning\ultralytics-8.3.163\datasets\number1\number1.yaml
+   - ultralytics 8.3.x（从 D:\Deeplearning\ultralytics-8.3.163 源码目录运行）
+   - torch（本次训练使用 CPU，只能用cpu，/(ㄒoㄒ)/~~）
+4.数据集：D:\Deeplearning\ultralytics-8.3.163\datasets\number1\number1.yaml
     10 个类别（0~9）
-   训练集 160 张，验证集 40 张 
+   训练集 160 张，验证集 40 张（每类 16 训练 / 4 验证）
  是
 三、运行方法
 1. 训练（在 PyCharm 中打开项目 D:\Deeplearning\ultralytics-8.3.163，运行 mytrain.py）：
@@ -27,7 +26,7 @@
    图上叠加了预测框、类别与置信度。
 
 四、参数说明（本次实际训练参数， runs\digit\train_full2\args.yaml）
-模型结构        yolo11n
+模型结构        yolo11n  最小
 训练轮数        epochs = 40
 批次大小        batch = 4
 输入尺寸        imgsz = 640
@@ -37,18 +36,28 @@
 
 五、实验结果
 1. 关键指标（最终轮 epoch=40；最优 mAP50-95 出现在 epoch=38）
-   Precision(B)      = 0.984  精确率
+  TP：真正例；FP：假正例（类别错误）  FN：假负例 漏检   TN：背景被识别为正确背景
+   Precision(B)      = 0.984  精确率 
    Recall(B)         = 1.000	召回率
-   mAP50(B)          = 0.995	平均精度均值
-   mAP50-95(B)       = 0.980（最优 epoch 38） IoU 阈值从 0.50 到 0.95平均精确度
+   mAP50(B)          = 0.995	平均精度均值 iou=0.5
+   mAP50-95(B)       = 0.980（最优 epoch 38）iou从0.5到0.95
    PR 曲线：10 个类别的 mAP50 全部为 0.995，PR 曲线紧贴左上角，说明在
    本验证集上分类与定位几乎完美。
+	iou : 预测框与真实框的重叠程度
+	conf : 对这个框的确信程度
+	NMS : 去重
 
-2. Loss 曲线分析（results.png）
-   val 三项损失（box/cls/dfl）同步下降，与训练损失趋势一致，
+
+2. Loss 曲线分析（results.png）模型预测结果与真实标签之间差距的指标
+   - val 三项损失（box/cls/dfl）同步下降，与训练损失趋势一致，
      没有出现"训练损失降、验证损失升"的发散，说明没有明显过拟合迹象
-     但是这个数据集太简单
+     但是这个数据集太简单，后续有待改进
 
+box_loss（边界框回归损失）：衡量模型预测的框（Bounding Box）
+与真实框在位置、大小上的误差
+cls_loss（分类损失）：衡量模型预测的类别（0~9）与真实类别的误差
+DFL让模型学习边界框的“概率分布”，使模型在边界模糊（如数字边缘不清晰）时，
+定位更加精细和鲁棒
 
 3 推理结果
     runs\predict_result\my_digit_test\ 下 40 张图均正确框出数字并给出
@@ -61,7 +70,7 @@
      居中的印刷数字。换成手写体、真实拍照背景、倾斜/粘连数字时，预期性能
      会明显下降
    2.样本量小（仅 200 张）、字体单一、无真实背景、无旋转/畸变
-   3.改进：补充手写体、真实场景背景、多字体、多尺寸
+   3.进：补充手写体）、真实场景背景、多字体、多尺寸
      与随机旋转的数据；扩大训练集到数千张；引入多数字连写样本
 
 失败情况2：对多个数字粘连识别效果不佳
@@ -82,7 +91,7 @@
 4.当前数据集数量少，但是由于内存问题和电脑无法用GPU来跑模型，
    暂且选择了网上找到的数量、压缩包大小合适的数据集，运用到真实中需要更多
    的、且具有扭曲、手写等贴近生活的数字图片
-	由于最近还在处理其他相关的，比如点云处理，电脑内存要booom了，所以
+   由于最近还在处理其他相关的，比如点云处理，电脑内存要booom了，所以
    数据集以及训练轮数都有偏少的问题，不是故意的🙏
    电脑卡机黑屏重启了好几次🙏 不敢乱来了🙏 希望理解🙏
 
