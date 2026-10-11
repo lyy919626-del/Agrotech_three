@@ -7,7 +7,7 @@ using namespace std;
 
 int main() 
 {
-    // ================= 1. 读取摄像头实时画面 =================
+    // 基础 1. 读取摄像头实时画面 
     VideoCapture cap(0); 
     if (!cap.isOpened()) 
     {
@@ -51,79 +51,6 @@ int main()
 
         // RETR_EXTERNAL只找最外层，避免嵌套干扰
         findContours(binary, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-
-
-    //     for (size_t i = 0; i < contours.size(); i++) 
-    //     {
-    //         // 过滤掉太小的轮廓、噪点
-    //         double area = contourArea(contours[i]);
-    //         if (area < 100) continue; // 注意：如果你要检测极小形状，这里可能要调到 50 甚至更小
-
-    //         // 多边形逼近（用于形状分类）
-    //         double peri = arcLength(contours[i], true);
-    //         vector<Point> approx;
-    //         approxPolyDP(contours[i], approx, 0.02 * peri, true); // 适当调小精度以适应小物体 一开始上网找的进度，这个是后面调的
-
-    //         // 获取最小外接矩形 
-    //         RotatedRect minRect = cv::minAreaRect(contours[i]);
-    //         Rect boundingRect = minRect.boundingRect(); // 仅用于计算文字摆放位置 不然乱飞 后面调整的
-
-    //         string shapeName = "Unknown";
-    //         Scalar color;
-
-    //         // 判断形状：根据顶点数量
-    //         if (approx.size() == 3) 
-    //         {
-    //             shapeName = "Triangle";
-    //             color = Scalar(0, 0, 255); // 红色
-    //         } 
-    //         else if (approx.size() == 4) 
-    //         {
-    //             float aspectRatio = (float)boundingRect.width / (float)boundingRect.height;
-    //             if (aspectRatio >= 0.85 && aspectRatio <= 1.15) 
-    //             {
-    //                 shapeName = "Square";
-    //                 color = Scalar(0, 255, 0); // 绿色
-    //             } else {
-    //                 shapeName = "Rectangle";
-    //                 color = Scalar(255, 0, 0); // 蓝色
-    //             }
-    //         } 
-    //         else if (approx.size() >= 5) 
-    //         { // 稍微放宽圆的判定条件
-    //             Point2f center;
-    //             float radius;
-    //             minEnclosingCircle(contours[i], center, radius);
-    //             float circleArea = 3.14159 * radius * radius;
-    //             float ratio = area / circleArea;
-    //             if (ratio > 0.7)
-    //             {
-    //                 shapeName = "Circle";
-    //                 color = Scalar(0, 255, 255); // 黄色
-    //             }
-    //     }
-
-    //     // 绘制结果 
-    //     if (shapeName != "Unknown") {
-    //         //  绘制轮廓
-    //         drawContours(result, contours, (int)i, color, 1);
-
-    //         //  绘制最小外接矩形（倾斜的框）
-    //         Point2f rect_points[4];
-    //         minRect.points(rect_points); // 获取四个顶点
-    //         for (int j = 0; j < 4; j++) {
-    //             // 连接相邻的两个顶点
-    //             line(result, rect_points[j], rect_points[(j + 1) % 4], color, 1);
-    //         }
-
-    //         // 绘制类别名称放在水平外接框的左上角
-    //         putText(result, shapeName, Point(boundingRect.x, boundingRect.y - 5),
-    //                 FONT_HERSHEY_SIMPLEX, 0.5, color, 1);
-    //     }
-    // }
-
-
-
 
 
 
@@ -170,16 +97,18 @@ int main()
                     color = Scalar(255, 0, 0); // 蓝色
                 }
             } 
-            else if (approx.size() > 6) {
+            else if (approx.size() > 6) 
+            {
                 // 顶点数大于4，可能是圆形 ，不过可以试一下6，但是这样就中间有空出来的没检测
                 // 通过判断轮廓面积与最小外接圆面积的比值来确认 圆形的比值接近1 ，这个借鉴了csdn上的 之前也试用过
                 Point2f center;
                 float radius;
-                minEnclosingCircle(contours[i], center, radius);
+                minEnclosingCircle(contours[i], center, radius);  //找到最小闭合的圆
                 float circleArea = 3.14159 * radius * radius;  //计算圆的面积
                 float ratio = area / circleArea;   //占比
                 
-                if (ratio > 0.7) { // 如果轮廓占据外接圆的70%以上，认为是圆 调一下
+                if (ratio > 0.7) 
+                { // 如果轮廓占据外接圆的70%以上，认为是圆 调一下
                     shapeName = "Circle";
                     color = Scalar(0, 255, 255); // 黄色
                 }
